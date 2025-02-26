@@ -47,8 +47,8 @@ public class ModuleIOSpark implements ModuleIO {
   private final SparkBase driveSpark;
   private final SparkBase turnSpark;
   private final RelativeEncoder driveEncoder;
-  private final DutyCycleEncoder turnEncoder;
-  // private final DutyCycleEncoder customEncoder;
+  private final RelativeEncoder turnEncoder;
+  private final DutyCycleEncoder customEncoder;
 
   // Closed loop controllers
   private final SparkClosedLoopController driveController;
@@ -93,10 +93,9 @@ public class ModuleIOSpark implements ModuleIO {
             },
             MotorType.kBrushless);
 
-    // customEncoder = new DutyCycleEncoder(module, 2 * Math.PI, 0);
-
     driveEncoder = driveSpark.getEncoder();
-    turnEncoder = new DutyCycleEncoder(module, 2 * Math.PI, 0);
+    turnEncoder = turnSpark.getEncoder();
+    customEncoder = new DutyCycleEncoder(module, 2 * Math.PI, 0);
     driveController = driveSpark.getClosedLoopController();
     turnController = turnSpark.getClosedLoopController();
 
@@ -169,13 +168,14 @@ public class ModuleIOSpark implements ModuleIO {
         () ->
             turnSpark.configure(
                 turnConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters));
+    tryUntilOk(turnSpark, 5, () -> turnEncoder.setPosition(customEncoder.get()));
 
     // Create odometry queues
     timestampQueue = SparkOdometryThread.getInstance().makeTimestampQueue();
     drivePositionQueue =
         SparkOdometryThread.getInstance().registerSignal(driveSpark, driveEncoder::getPosition);
     turnPositionQueue =
-        SparkOdometryThread.getInstance().registerSignal(turnSpark, turnEncoder::get);
+        SparkOdometryThread.getInstance().registerSignal(turnSpark, turnEncoder::getPosition);
   }
 
   @Override
@@ -195,9 +195,9 @@ public class ModuleIOSpark implements ModuleIO {
     sparkStickyFault = false;
     ifOk(
         turnSpark,
-        turnEncoder::get,
+        turnEncoder::getPosition,
         (value) -> inputs.turnPosition = new Rotation2d(value).minus(zeroRotation));
-    // ifOk(turnSpark, turnEncoder::getVelocity, (value) -> inputs.turnVelocityRadPerSec = value);
+    ifOk(turnSpark, turnEncoder::getVelocity, (value) -> inputs.turnVelocityRadPerSec = value);
     ifOk(
         turnSpark,
         new DoubleSupplier[] {turnSpark::getAppliedOutput, turnSpark::getBusVoltage},

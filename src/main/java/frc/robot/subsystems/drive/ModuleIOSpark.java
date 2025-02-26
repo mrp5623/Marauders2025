@@ -32,6 +32,7 @@ import com.revrobotics.spark.config.SparkMaxConfig;
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.filter.Debouncer;
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.wpilibj.DutyCycleEncoder;
 import java.util.Queue;
 import java.util.function.DoubleSupplier;
 
@@ -46,7 +47,7 @@ public class ModuleIOSpark implements ModuleIO {
   private final SparkBase driveSpark;
   private final SparkBase turnSpark;
   private final RelativeEncoder driveEncoder;
-  private final RelativeEncoder turnEncoder;
+  private final DutyCycleEncoder turnEncoder;
   // private final DutyCycleEncoder customEncoder;
 
   // Closed loop controllers
@@ -95,7 +96,7 @@ public class ModuleIOSpark implements ModuleIO {
     // customEncoder = new DutyCycleEncoder(module, 2 * Math.PI, 0);
 
     driveEncoder = driveSpark.getEncoder();
-    turnEncoder = turnSpark.getEncoder();
+    turnEncoder = new DutyCycleEncoder(module, 2 * Math.PI, 0);
     driveController = driveSpark.getClosedLoopController();
     turnController = turnSpark.getClosedLoopController();
 
@@ -169,14 +170,12 @@ public class ModuleIOSpark implements ModuleIO {
             turnSpark.configure(
                 turnConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters));
 
-    tryUntilOk(turnSpark, 5, () -> turnEncoder.setPosition(0));
-
     // Create odometry queues
     timestampQueue = SparkOdometryThread.getInstance().makeTimestampQueue();
     drivePositionQueue =
         SparkOdometryThread.getInstance().registerSignal(driveSpark, driveEncoder::getPosition);
     turnPositionQueue =
-        SparkOdometryThread.getInstance().registerSignal(turnSpark, turnEncoder::getPosition);
+        SparkOdometryThread.getInstance().registerSignal(turnSpark, turnEncoder::get);
   }
 
   @Override
@@ -196,9 +195,9 @@ public class ModuleIOSpark implements ModuleIO {
     sparkStickyFault = false;
     ifOk(
         turnSpark,
-        turnEncoder::getPosition,
+        turnEncoder::get,
         (value) -> inputs.turnPosition = new Rotation2d(value).minus(zeroRotation));
-    ifOk(turnSpark, turnEncoder::getVelocity, (value) -> inputs.turnVelocityRadPerSec = value);
+    // ifOk(turnSpark, turnEncoder::getVelocity, (value) -> inputs.turnVelocityRadPerSec = value);
     ifOk(
         turnSpark,
         new DoubleSupplier[] {turnSpark::getAppliedOutput, turnSpark::getBusVoltage},

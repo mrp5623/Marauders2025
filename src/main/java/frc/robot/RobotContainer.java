@@ -20,11 +20,14 @@ import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
+import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import frc.robot.commands.DriveCommands;
+import frc.robot.subsystems.Claw;
 import frc.robot.subsystems.Lift;
+import frc.robot.subsystems.Wrist;
 import frc.robot.subsystems.drive.Drive;
 import frc.robot.subsystems.drive.GyroIO;
 import frc.robot.subsystems.drive.GyroIOPigeon2;
@@ -43,6 +46,8 @@ public class RobotContainer {
   // Subsystems
   private final Drive drive;
   private final Lift lift;
+  private final Wrist wrist;
+  private final Claw claw;
 
   // Command
 
@@ -91,6 +96,8 @@ public class RobotContainer {
     }
 
     lift = new Lift();
+    wrist = new Wrist();
+    claw = new Claw();
 
     // Set up auto routines
     autoChooser = new LoggedDashboardChooser<>("Auto Choices", AutoBuilder.buildAutoChooser());
@@ -155,6 +162,16 @@ public class RobotContainer {
                 .ignoringDisable(true));
 
     lift.setDefaultCommand(new RunCommand(() -> lift.manualRun(controller2::getLeftY), lift));
+    wrist.setDefaultCommand(new RunCommand(() -> wrist.manualRun(controller2::getRightY), wrist));
+
+    controller2
+        .rightBumper()
+        .whileTrue(new RunCommand(() -> claw.manualRun(1)))
+        .onFalse(new InstantCommand(() -> claw.manualRun(0)));
+    controller2
+        .leftBumper()
+        .whileTrue(new RunCommand(() -> claw.manualRun(-1)))
+        .onFalse(new InstantCommand(() -> claw.manualRun(0)));
   }
 
   /**

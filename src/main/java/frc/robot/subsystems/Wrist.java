@@ -11,15 +11,15 @@ import com.revrobotics.spark.config.SparkMaxConfig;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import java.util.function.DoubleSupplier;
 
-public class Lift extends SubsystemBase {
-  SparkBase left = new SparkMax(13, MotorType.kBrushless);
+public class Wrist extends SubsystemBase {
+  SparkBase left = new SparkMax(15, MotorType.kBrushless);
   SparkMaxConfig leftConfig = new SparkMaxConfig();
   RelativeEncoder leftEnc = left.getEncoder();
-  SparkBase right = new SparkMax(14, MotorType.kBrushless);
+  SparkBase right = new SparkMax(16, MotorType.kBrushless);
   SparkMaxConfig righConfig = new SparkMaxConfig();
   RelativeEncoder rightEnc = right.getEncoder();
 
-  public Lift() {
+  public Wrist() {
     leftConfig.idleMode(IdleMode.kCoast);
     righConfig.idleMode(IdleMode.kCoast);
     left.configure(leftConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);

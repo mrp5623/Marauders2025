@@ -128,4 +128,9 @@ public class Module {
   public double getFFCharacterizationVelocity() {
     return inputs.driveVelocityRadPerSec;
   }
+
+  public void resetEncoder() {
+    ModuleIOSpark io = (ModuleIOSpark) this.io;
+    io.resetTurnPosition();
+  }
 }

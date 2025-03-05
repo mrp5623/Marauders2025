@@ -127,6 +127,8 @@ public class Drive extends SubsystemBase {
   @Override
   public void periodic() {
 
+    resetTurnPosition();
+
     /// SmartDashboard.putNumber("EncoderTest", customEncoder.get());
     odometryLock.lock(); // Prevents odometry updates while reading data
     gyroIO.updateInputs(gyroInputs);
@@ -322,5 +324,11 @@ public class Drive extends SubsystemBase {
   /** Returns the maximum angular speed in radians per sec. */
   public double getMaxAngularSpeedRadPerSec() {
     return maxSpeedMetersPerSec / driveBaseRadius;
+  }
+
+  public void resetTurnPosition() {
+    for (var module : modules) {
+      module.resetEncoder();
+    }
   }
 }

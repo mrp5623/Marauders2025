@@ -40,7 +40,7 @@ public class DriveDistance extends Command {
   @Override
   public void initialize() {
     // Get linear velocity
-    Translation2d linearVelocity = getLinearVelocityFromJoysticks(-1, 0);
+    Translation2d linearVelocity = getLinearVelocityFromJoysticks(1, 0);
 
     // Apply rotation deadband
     double omega = MathUtil.applyDeadband(0, .1);

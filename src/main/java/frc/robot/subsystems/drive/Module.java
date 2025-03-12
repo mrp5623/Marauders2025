@@ -133,4 +133,9 @@ public class Module {
     ModuleIOSpark io = (ModuleIOSpark) this.io;
     io.resetTurnPosition();
   }
+
+  public double getDrivePosistion() {
+    ModuleIOSpark io = (ModuleIOSpark) this.io;
+    return io.getDrivePosition();
+  }
 }

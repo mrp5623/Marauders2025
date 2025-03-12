@@ -1,69 +1,70 @@
-package frc.robot.subsystems;
+// package frc.robot.subsystems;
 
-import com.revrobotics.RelativeEncoder;
-import com.revrobotics.spark.SparkBase;
-import com.revrobotics.spark.SparkBase.PersistMode;
-import com.revrobotics.spark.SparkBase.ResetMode;
-import com.revrobotics.spark.SparkLowLevel.MotorType;
-import com.revrobotics.spark.SparkMax;
-import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
-import com.revrobotics.spark.config.SparkMaxConfig;
+// import com.revrobotics.RelativeEncoder;
+// import com.revrobotics.spark.SparkBase;
+// import com.revrobotics.spark.SparkBase.PersistMode;
+// import com.revrobotics.spark.SparkBase.ResetMode;
+// import com.revrobotics.spark.SparkLowLevel.MotorType;
+// import com.revrobotics.spark.SparkMax;
+// import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
+// import com.revrobotics.spark.config.SparkMaxConfig;
+// import edu.wpi.first.math.controller.PIDController;
+// import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+// import edu.wpi.first.wpilibj2.command.SubsystemBase;
+// import java.util.function.DoubleSupplier;
 
-import edu.wpi.first.math.controller.PIDController;
-import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import java.util.function.DoubleSupplier;
+// public class Lift extends SubsystemBase {
 
-public class Lift extends SubsystemBase {
-  SparkBase left = new SparkMax(13, MotorType.kBrushless);
-  SparkMaxConfig leftConfig = new SparkMaxConfig();
-  RelativeEncoder leftEnc = left.getEncoder();
-  SparkBase right = new SparkMax(14, MotorType.kBrushless);
-  SparkMaxConfig rightConfig = new SparkMaxConfig();
-  RelativeEncoder rightEnc = right.getEncoder();
-  PIDController liftController;
-    double radius = 1;
+//   SparkBase lift = new SparkMax(13, MotorType.kBrushless);
+//   SparkMaxConfig liftConfig = new SparkMaxConfig();
+//   RelativeEncoder liftEnc = lift.getEncoder();
+//   PIDController liftController;
+//   double radius = .38;
 
-  public Lift() {
-    leftConfig.idleMode(IdleMode.kBrake);
-    rightConfig.idleMode(IdleMode.kBrake);
-    rightConfig.inverted(true);
-    leftConfig.inverted(false);
-    left.configure(leftConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
-    right.configure(rightConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
-    liftController = new PIDController(.5, 0, 0);
-    liftController.setTolerance(2);
-  }
+//   public Lift() {
 
-  public void manualRun(DoubleSupplier power) {
-    left.set(power.getAsDouble());
-    right.set(power.getAsDouble());
-  }
+//     liftConfig.idleMode(IdleMode.kBrake);
+//     liftConfig.inverted(true);
+//     liftConfig.limitSwitch.reverseLimitSwitchEnabled(false);
 
-  public void setPower(double speed){
-    left.set(speed);
-    right.set(speed);
-  }
+//     lift.configure(liftConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
+//     liftController = new PIDController(.5, 0, 0);
+//     liftController.setTolerance(2);
+//     resetEncoders();
+//   }
 
-  public void setSetpoint(double setpoint){
-    liftController.setSetpoint(setpoint);
-  }
+//   @Override
+//   public void periodic() {
+//     SmartDashboard.putNumber("Lift Encoder", getHeight());
+//   }
 
-  public boolean atSetpoint(){
-    return liftController.atSetpoint();
-  }
+//   public void manualRun(DoubleSupplier power) {
+//     lift.set(power.getAsDouble());
+//   }
 
-  public void calculate(){
-    double power =liftController.calculate(getHeight());
-    left.set(power);
-    right.set(power);
-  }
+//   public void setPower(double speed) {
+//     lift.set(speed);
+//   }
 
-  public double getHeight(){
-    return rightEnc.getPosition()/((1/2)*42)*2*Math.PI*radius;
-  }
+//   public void setSetpoint(double setpoint) {
+//     liftController.setSetpoint(setpoint);
+//   }
 
-  public void resetEncoders(){
-    leftEnc.setPosition(0);
-    rightEnc.setPosition(0);
-  }
-}
+//   public boolean atSetpoint() {
+//     return liftController.atSetpoint();
+//   }
+
+//   public void calculate() {
+//     double power = liftController.calculate(getHeight());
+//     lift.set(power);
+//   }
+
+//   public double getHeight() {
+
+//     return liftEnc.getPosition() / 42 * 2 * 2 * Math.PI * radius;
+//   }
+
+//   public void resetEncoders() {
+//     liftEnc.setPosition(0);
+//   }
+// }

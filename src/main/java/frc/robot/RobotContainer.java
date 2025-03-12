@@ -21,11 +21,13 @@ import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 // import edu.wpi.first.wpilibj2.command.InstantCommand;
-// import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import frc.robot.commands.DriveCommands;
-// import frc.robot.subsystems.Claw;
+import frc.robot.commands.DriveDistance;
+// import frc.robot.commands.LiftToHeight;
+// import frc.robot.commands.WristToAngle;
+// // import frc.robot.subsystems.Claw;
 // import frc.robot.subsystems.Lift;
 // import frc.robot.subsystems.Wrist;
 import frc.robot.subsystems.drive.Drive;
@@ -53,7 +55,7 @@ public class RobotContainer {
 
   // Controller
   private final CommandXboxController controller1 = new CommandXboxController(0);
-  // private final CommandXboxController controller2 = new CommandXboxController(1);
+  private final CommandXboxController controller2 = new CommandXboxController(1);
 
   // Dashboard inputs
   private final LoggedDashboardChooser<Command> autoChooser;
@@ -161,11 +163,19 @@ public class RobotContainer {
                     drive)
                 .ignoringDisable(true));
 
-    // controller1.y().onTrue(Commands.runOnce(drive::resetTurnPosition, drive));
+    controller1.y().onTrue(new DriveDistance(drive, 12));
 
-    // lift.setDefaultCommand(new RunCommand(() -> lift.manualRun(controller2::getLeftY), lift));
-    // wrist.setDefaultCommand(new RunCommand(() -> wrist.manualRun(controller2::getRightY),
-    // wrist));
+    // controller2.x().onTrue(new LiftToHeight(lift, 10));
+    // controller2.b().onTrue(new LiftToHeight(lift, -10));
+
+    // controller2.y().onTrue(new WristToAngle(wrist, 30));
+    // controller2.a().onTrue(new WristToAngle(wrist, -30));
+
+    // lift.setDefaultCommand(
+    //     new RunCommand(() -> lift.manualRun(() -> controller2.getLeftY()), lift));
+
+    // wrist.setDefaultCommand(
+    //     new RunCommand(() -> wrist.manualRun(() -> controller2.getRightY()), wrist));
 
     // controller2
     //     .rightBumper()

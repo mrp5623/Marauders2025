@@ -39,6 +39,7 @@ import edu.wpi.first.wpilibj.Alert;
 import edu.wpi.first.wpilibj.Alert.AlertType;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
@@ -126,7 +127,7 @@ public class Drive extends SubsystemBase {
 
   @Override
   public void periodic() {
-
+    SmartDashboard.putNumber("Drive Distance", getDrivePosistion());
     resetTurnPosition();
 
     /// SmartDashboard.putNumber("EncoderTest", customEncoder.get());
@@ -230,6 +231,7 @@ public class Drive extends SubsystemBase {
   public void stopWithX() {
     Rotation2d[] headings = new Rotation2d[4];
     for (int i = 0; i < 4; i++) {
+
       headings[i] = moduleTranslations[i].getAngle();
     }
     kinematics.resetHeadings(headings);
@@ -330,5 +332,9 @@ public class Drive extends SubsystemBase {
     for (var module : modules) {
       module.resetEncoder();
     }
+  }
+
+  public double getDrivePosistion() {
+    return modules[0].getDrivePosistion() * 2;
   }
 }

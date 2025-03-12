@@ -251,4 +251,8 @@ public class ModuleIOSpark implements ModuleIO {
   public void resetTurnPosition() {
     turnEncoder.setPosition(customEncoder.get());
   }
+
+  public double getDrivePosition() {
+    return driveEncoder.getPosition();
+  }
 }

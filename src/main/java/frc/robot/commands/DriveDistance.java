@@ -38,9 +38,9 @@ public class DriveDistance extends Command {
   }
 
   @Override
-  public void initialize() {
+  public void execute() {
     // Get linear velocity
-    Translation2d linearVelocity = getLinearVelocityFromJoysticks(1, 0);
+    Translation2d linearVelocity = getLinearVelocityFromJoysticks(.75, 0);
 
     // Apply rotation deadband
     double omega = MathUtil.applyDeadband(0, .1);
@@ -57,10 +57,7 @@ public class DriveDistance extends Command {
     isFlipped =
         DriverStation.getAlliance().isPresent()
             && DriverStation.getAlliance().get() == Alliance.Red;
-  }
 
-  @Override
-  public void execute() {
     drive.runVelocity(
         ChassisSpeeds.fromFieldRelativeSpeeds(
             speeds,
@@ -70,7 +67,7 @@ public class DriveDistance extends Command {
   @Override
   public boolean isFinished() {
 
-    return Math.abs(drive.getDrivePosistion() - distance) < 5;
+    return Math.abs(drive.getDrivePosistion() - distance) < 3;
   }
 
   @Override

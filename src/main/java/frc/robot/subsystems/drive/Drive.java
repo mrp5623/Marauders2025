@@ -356,4 +356,8 @@ public class Drive extends SubsystemBase {
   public double getDrivePosistion() {
     return modules[0].getDrivePosistion() * 2;
   }
+
+  public boolean isAtDistance(double distance) {
+    return Math.abs(getDrivePosistion() - distance) < 3;
+  }
 }

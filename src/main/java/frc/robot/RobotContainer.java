@@ -20,6 +20,8 @@ import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
+import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
+import edu.wpi.first.wpilibj2.command.WaitCommand;
 // import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
@@ -119,7 +121,8 @@ public class RobotContainer {
         "Drive SysId (Dynamic Forward)", drive.sysIdDynamic(SysIdRoutine.Direction.kForward));
     autoChooser.addOption(
         "Drive SysId (Dynamic Reverse)", drive.sysIdDynamic(SysIdRoutine.Direction.kReverse));
-    autoChooser.addOption("Go Back", new DriveDistance(drive, -12));
+    autoChooser.addOption(
+        "Go Back", new SequentialCommandGroup(new WaitCommand(2), new DriveDistance(drive, -12)));
     // Configure the button bindings
     configureButtonBindings();
   }
@@ -163,7 +166,7 @@ public class RobotContainer {
                     drive)
                 .ignoringDisable(true));
 
-    controller1.y().onTrue(new DriveDistance(drive, 12));
+    controller1.y().onTrue(new DriveDistance(drive, -12));
 
     // controller2.x().onTrue(new LiftToHeight(lift, 10));
     // controller2.b().onTrue(new LiftToHeight(lift, -10));
@@ -193,6 +196,7 @@ public class RobotContainer {
    * @return the command to run in autonomous
    */
   public Command getAutonomousCommand() {
-    return autoChooser.get();
+    return DriveCommands.joystickDrive(drive, () -> .75, () -> 0, () -> 0)
+        .until(() -> drive.isAtDistance(-24));
   }
 }
